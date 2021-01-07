@@ -3,6 +3,9 @@ from collections import OrderedDict
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView    # для вывода информации в виде списка
 from rest_framework.generics import RetrieveAPIView    # для вывода информации об одном конкретном объекте используя информацию из поля поиска lookup_field
+from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView    # получить список или создать список (GET, POST запросы)
+from rest_framework.generics import UpdateAPIView    # модификация через API (PUT, DELETE запросы)
+from rest_framework.generics import DestroyAPIView    # удаление (DELETE запрос)
 from rest_framework.filters import SearchFilter    # более гибкий вариант фильтрования
 from rest_framework.pagination import PageNumberPagination    # для пагинации (2ой способ)
 
@@ -10,7 +13,7 @@ from .serializers import CategorySerializer, SmartphoneSerializer, NotebookSeria
 from ..models import Category, Smartphone, Notebook, Customer
 
 
-class CategoryPagination(PageNumberPagination):    # пагинация с использованием существующих классов пагинации (2ой способ)
+class ProductsPagination(PageNumberPagination):    # пагинация с использованием существующих классов пагинации (2ой способ)
     page_size = 2    # количество объектов на странице
     page_size_query_param = "page_size"    # указывающее имя параметра запроса, которое позволяет клиенту устанавливать размер страницы для каждого запроса
     max_page_size = 10    # максимально допустимый размер запрашиваемой страницы
@@ -24,14 +27,14 @@ class CategoryPagination(PageNumberPagination):    # пагинация с ис�
         ]))
 
 
-class CategoryListAPIView(ListAPIView):    # для вывода списка категорий
+class CategoryAPIView(ListCreateAPIView, RetrieveUpdateAPIView):    # для вывода или создания списка категорий (почти поноценный крут)
     serializer_class = CategorySerializer
-    pagination_class = CategoryPagination    # подключение класса пагинации к этому классу
     queryset = Category.objects.all()    # выводит всю информацию о категориях
 
 
-class SmartphoneListAPIView(ListAPIView):
+class SmartphoneListAPIView(ListAPIView):    # для вывода списка смартфонов
     serializer_class = SmartphoneSerializer
+    pagination_class = ProductsPagination    # подключение класса пагинации к этому классу
     queryset = Smartphone.objects.all()
 
     # def get_queryset(self):    # фильтрация через переопределения queryset параметров (1ый способ)
@@ -50,6 +53,7 @@ class SmartphoneListAPIView(ListAPIView):
 
 class NotebookListAPIView(ListAPIView):
     serializer_class = NotebookSerializer
+    pagination_class = ProductsPagination
     queryset = Notebook.objects.all()
 
     filter_backends = [SearchFilter]    # фильтр
@@ -71,4 +75,3 @@ class NotebookDetailAPIView(RetrieveAPIView):
 class CustomersListAPIView(ListAPIView):
     serializer_class = CustomerSerializer
     queryset = Customer.objects.all()
-
