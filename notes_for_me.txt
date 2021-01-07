@@ -114,3 +114,5 @@ python manage.py test
         - serializers.py    (волидирует коректность пост запрос на API url) - 1й шаг
         - urls.py - 3й шаг
 
+2. Создание API товаров и фильтрация товаров
+
