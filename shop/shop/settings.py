@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "mainapp",    # подключение приложения
     "crispy_forms",    # приложение для отображения ровных и красивых полей формы для заполнения
+    "rest_framework",    # подключить приложение Django Rest (для API)
 ]
 
 MIDDLEWARE = [

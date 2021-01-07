@@ -103,3 +103,14 @@ python manage.py test
 Этапы создания API сайта
 (пометки по обучению)
 
+1. Установка Django Rest и создание API категорий
+    a) Установка Django Rest
+    pip install djangorestframework
+    b) Подключить приложение Django Rest в файле settings.py
+    c) Создать дерикторию <api>
+        В ней:
+        - __init__.py    (инициализация дериктории)
+        - api_views.py    (выдает Json) - 2й шаг
+        - serializers.py    (волидирует коректность пост запрос на API url) - 1й шаг
+        - urls.py - 3й шаг
+
