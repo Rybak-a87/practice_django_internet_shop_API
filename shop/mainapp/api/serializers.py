@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Category, Smartphone, Notebook
+from ..models import Category, Smartphone, Notebook, Customer, Order
 
 
 class CategorySerializer(serializers.ModelSerializer):    # сериалайзер для модели Category
@@ -44,6 +44,8 @@ class SmartphoneSerializer(BaseProductSerializer, serializers.ModelSerializer):
         # ]
         fields = "__all__"    # выбрать все поля
 
+    # переопределить поле заказов (order)
+
 
 class NotebookSerializer(BaseProductSerializer, serializers.ModelSerializer):
     diagonal = serializers.CharField(required=True)
@@ -56,3 +58,19 @@ class NotebookSerializer(BaseProductSerializer, serializers.ModelSerializer):
     class Meta:
         model = Notebook
         fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):    # сериалайзер для вывода подробной информации о заказах в API покупателя
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    orders = OrderSerializer(many=True)    # вывод подробной информации в поле <orders> (переопределить поле заказов (order))
+
+    class Meta:
+        model = Customer
+        fields = "__all__"
+

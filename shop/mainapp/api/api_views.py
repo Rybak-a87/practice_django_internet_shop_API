@@ -1,10 +1,11 @@
-from rest_framework.generics import ListAPIView    # для вывода списка категорий
+from rest_framework.generics import ListAPIView    # для вывода информации в виде списка
+from rest_framework.generics import RetrieveAPIView    # для вывода информации об одном конкретном объекте используя информацию из поля поиска lookup_field
 from rest_framework.filters import SearchFilter    # более гибкий вариант фильтрования
-from .serializers import CategorySerializer, SmartphoneSerializer, NotebookSerializer
-from ..models import Category, Smartphone, Notebook
+from .serializers import CategorySerializer, SmartphoneSerializer, NotebookSerializer, CustomerSerializer
+from ..models import Category, Smartphone, Notebook, Customer
 
 
-class CategoryListAPIView(ListAPIView):
+class CategoryListAPIView(ListAPIView):    # для вывода списка категорий
     serializer_class = CategorySerializer
     queryset = Category.objects.all()    # выводит всю информацию о категориях
 
@@ -33,3 +34,21 @@ class NotebookListAPIView(ListAPIView):
 
     filter_backends = [SearchFilter]    # фильтр
     search_fields = ["price", "title"]
+
+
+class SmartphoneDetailAPIView(RetrieveAPIView):    # для вывода информации об одном конкретном объекте используя информацию из поля поиска lookup_field
+    serializer_class = SmartphoneSerializer
+    queryset = Smartphone.objects.all()
+    lookup_field = "id"    # поле поиска для вывода
+
+
+class NotebookDetailAPIView(RetrieveAPIView):
+    serializer_class = NotebookSerializer
+    queryset = Notebook.objects.all()
+    lookup_field = "id"
+
+
+class CustomersListAPIView(ListAPIView):
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+
