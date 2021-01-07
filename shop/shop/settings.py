@@ -39,8 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "mainapp",    # подключение приложения
     "crispy_forms",    # приложение для отображения ровных и красивых полей формы для заполнения
-    "rest_framework",    # подключить приложение Django Rest (для API)
+    "rest_framework",    # подключить приложение Django Rest API
 ]
+
+
+# REST_FRAMEWORK = {    # глобальная настройка пагинации Django Rest API (1ый способ пагинации)
+#     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",    # в каждом view будет использоватся дефолтный класс пагинации (есть еще .LimitOffsetPagination)
+#     "PAGE_SIZE": 2,    # количество объектов на странице
+# }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

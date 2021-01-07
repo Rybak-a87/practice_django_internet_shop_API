@@ -118,3 +118,5 @@ python manage.py test
 
 3. API объекта смартфона и API покупателей
 
+4. Пагинация [Django Rest Pagination]
+
