@@ -1,3 +1,5 @@
+import stripe
+
 from django.db import transaction
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
@@ -135,12 +137,22 @@ class CartView(CartMixin, View):
 
 class CheckoutView(CartMixin, View):
     def get(self, request, *args, **kwargs):
+
+        # для онлайт платежей
+        stripe.api_key = "sk_test_51I78LLG1If2897xT88A8DBzoTYNm5EjIoZ4vCOyGWbIFu9emzebgBtXX1hUnSXzB5te0tLsIax4dCAXiys1LUHhd00UGqBXjSe"
+        intent = stripe.PaymentIntent.create(
+            amount=int(self.cart.final_price * 100),    # сумма к оплате
+            currency="uah",    # валюта
+            metadata={"integration_check": "accept_a_payment"},
+        )
+
         categories = Category.objects.get_categories_for_left_sidebar()
         form = OrderForm(request.POST or None)    # пост запрос или ничего (инстансирование формы)
         context = {
             "cart": self.cart,
             "categories": categories,
             "form": form,
+            "client_secret": intent.client_secret,    # подключение к странце онлайн платежей
         }
         return render(request, "mainapp/checkout.html", context)
 
