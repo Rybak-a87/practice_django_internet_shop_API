@@ -135,3 +135,5 @@ python manage.py test
     pip install --upgrade stripe
     b) Создать инициация платежа
 
+3. Создание платежа и сохранение заказа
+

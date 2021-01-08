@@ -239,7 +239,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=20, verbose_name="Номер телефона", null=True, blank=True)    # желательно чтоб было обязательным к заполнению
     address = models.CharField(max_length=255, verbose_name="Адрес", null=True, blank=True)    # желательно чтоб было обязательным к заполнению
     orders = models.ManyToManyField(
-        "Order", verbose_name="Заказы покупателя", related_name="related_customer", null=True, blank=True
+        "Order", verbose_name="Заказы покупателя", related_name="related_customer", blank=True
     )
 
     def __str__(self):
@@ -252,10 +252,12 @@ class Order(models.Model):
     STATUS_READY = "is_ready"
     STATUS_COMPLETED = "completed"
 
+    STATUS_PAYED = "payed"
     BUYING_TYPE_SELF = "self"
     BUYING_TYPE_DELIVERY = "delivery"
 
     STATUS_CHOICES = (
+        (STATUS_PAYED, "Заказ оплачен"),
         (STATUS_NEW, "Новый заказ"),
         (STATUS_IN_PROGRESS, "Заказ в обработке"),
         (STATUS_READY, "Заказ готов"),

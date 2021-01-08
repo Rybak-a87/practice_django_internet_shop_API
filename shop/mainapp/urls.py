@@ -15,4 +15,5 @@ urlpatterns = [
     path("change-qty/<str:ct_model>/<str:slug>/", views.ChangeQTYView.as_view(), name="change_qty"),
     path("checkout/", views.CheckoutView.as_view(), name="checkout"),
     path("make-order/", views.MakeOrderView.as_view(), name="make_order"),
+    path("payed-online-order/", views.PayedOnlineOrderView.as_view(), name="payed_online"),    # для онлайн платежа
 ]

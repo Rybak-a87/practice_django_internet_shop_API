@@ -4,10 +4,10 @@ from django.db import transaction
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages    # выводит информацию о каких либо осуществленных действиях
-from django.http import HttpResponseRedirect    # для перенаправления
+from django.http import HttpResponseRedirect, JsonResponse    # для перенаправления
 from django.views.generic import DetailView, View
 
-from .models import Notebook, Smartphone, Category, LatestProducts, Customer, Cart, CartProduct
+from .models import Notebook, Smartphone, Category, LatestProducts, Customer, Cart, CartProduct, Order
 from .mixins import CategoryDetailMixin, CartMixin     # должет первый по порядку наследоватся
 from .forms import OrderForm
 from .utils import recalc_cart
@@ -138,13 +138,14 @@ class CartView(CartMixin, View):
 class CheckoutView(CartMixin, View):
     def get(self, request, *args, **kwargs):
 
-        # для онлайт платежей
+        # для онлайт платежей ---
         stripe.api_key = "sk_test_51I78LLG1If2897xT88A8DBzoTYNm5EjIoZ4vCOyGWbIFu9emzebgBtXX1hUnSXzB5te0tLsIax4dCAXiys1LUHhd00UGqBXjSe"
         intent = stripe.PaymentIntent.create(
             amount=int(self.cart.final_price * 100),    # сумма к оплате
             currency="uah",    # валюта
             metadata={"integration_check": "accept_a_payment"},
         )
+        # ---
 
         categories = Category.objects.get_categories_for_left_sidebar()
         form = OrderForm(request.POST or None)    # пост запрос или ничего (инстансирование формы)
@@ -182,3 +183,24 @@ class MakeOrderView(CartMixin, View):
         return HttpResponseRedirect("/checkout/")
 
 
+# для онлайн платежа
+class PayedOnlineOrderView(CartMixin, View):
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        customer = Customer.objects.get(user=request.user)
+        new_order = Order()
+        new_order.customer = customer
+        new_order.first_name = customer.user.first_name
+        new_order.last_name = customer.user.last_name
+        new_order.phone = customer.phone
+        new_order.address = customer.address
+        new_order.buying_type = Order.BUYING_TYPE_SELF
+        new_order.save()
+        self.cart.in_order = True
+        self.cart.save()
+        new_order.cart = self.cart
+        new_order.status = Order.STATUS_PAYED
+        new_order.save()
+        customer.orders.add(new_order)
+        print("-------------------------------------------------------")
+        return JsonResponse({"status": "payed"})    # выводит json ответ с бекэнда
